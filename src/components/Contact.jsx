@@ -1,11 +1,12 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import emailjs from '@emailjs/browser';
+import { send } from '@emailjs/browser';
 
 import { styles } from '../styles';
 import { EarthCanvas } from './canvas';
 import { SectionWrapper } from '../hoc';
 import { slideIn } from '../utils/motion';
+import config from '../config';
 
 const Contact = () => {
   const formRef = useRef();
@@ -15,9 +16,45 @@ const Contact = () => {
     message: '',
   });
   const [loading, setLoading] = useState(false);
-
-  const handleChange = () => {};
-  const handleSubmit = () => {};
+  console.log(config);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    send(
+      config.emailjsServiceId,
+      config.emailjsTemplateId,
+      {
+        from_name: form.name,
+        to_name: 'Donald',
+        from_email: form.email,
+        to_email: 'developer.donaldivan@gmail.com',
+        message: form.message,
+      },
+      config.emailjsPublicKey,
+    )
+      .then(() => {
+        alert('Thank you. I will get back to you as soon as possible');
+        setForm({
+          name: '',
+          email: '',
+          message: '',
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong.');
+      });
+  };
   return (
     <div className="flex flex-col-reverse gap-10 overflow-hidden xl:mt-12 xl:flex-row">
       <motion.div

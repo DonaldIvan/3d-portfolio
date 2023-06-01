@@ -7,6 +7,9 @@
     "plugin:jsx-a11y/recommended",
     "eslint-config-prettier"
   ],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
   "settings": {
     "react": {
       "version": "detect"
